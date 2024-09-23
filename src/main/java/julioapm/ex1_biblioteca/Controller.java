@@ -4,14 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/biblioteca")
@@ -24,7 +17,7 @@ public class Controller {
 
     @GetMapping
     public String mensagemDeBemVindo() {
-        return "Bem vindo a biblioteca central!";
+        return "Bem vindo à biblioteca central!";
     }
 
     @GetMapping("/livros")
@@ -60,5 +53,39 @@ public class Controller {
     public boolean cadastraLivroNovo(@RequestBody final Livro livro) {
         return acervo.cadastraLivroNovo(livro);
     }
-    
+
+    @PostMapping("/emprestarlivro/{codigo}")
+    public ResponseEntity<String> emprestarLivro(@PathVariable int codigo, @RequestBody Usuario usuario) {
+        boolean resultado = acervo.emprestarLivro(codigo, usuario);
+        if (resultado) {
+            return ResponseEntity.status(HttpStatus.OK).body("Livro emprestado com sucesso.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Não foi possível emprestar o livro.");
+        }
+    }
+
+    @PostMapping("/devolverlivro/{codigo}")
+    public ResponseEntity<String> devolverLivro(@PathVariable int codigo) {
+        boolean resultado = acervo.devolverLivro(codigo);
+        if (resultado) {
+            return ResponseEntity.status(HttpStatus.OK).body("Livro devolvido com sucesso.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Não foi possível devolver o livro.");
+        }
+    }
+
+    @GetMapping("/livrosemprestados")
+    public List<Livro> getLivrosEmprestados() {
+        return acervo.getLivrosEmprestados();
+    }
+
+    @GetMapping("/livrosdisponiveis")
+    public List<Livro> getLivrosDisponiveis() {
+        return acervo.getLivrosDisponiveis();
+    }
+
+    @GetMapping("/livrosemprestadosusuario")
+    public List<Livro> getLivrosEmprestadosPorUsuario(@RequestBody Usuario usuario) {
+        return acervo.getLivrosEmprestadosPorUsuario(usuario);
+    }
 }

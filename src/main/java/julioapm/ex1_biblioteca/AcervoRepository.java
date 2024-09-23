@@ -10,4 +10,9 @@ public interface AcervoRepository {
     List<Livro> getLivrosTitulo(String titulo);
     boolean cadastraLivroNovo(Livro livro);
     boolean removeLivro(int codigo);
+    boolean emprestarLivro(int codigo, Usuario usuario);
+    boolean devolverLivro(int codigo);
+    List<Livro> getLivrosEmprestados();
+    List<Livro> getLivrosDisponiveis();
+    List<Livro> getLivrosEmprestadosPorUsuario(Usuario usuario);
 }
